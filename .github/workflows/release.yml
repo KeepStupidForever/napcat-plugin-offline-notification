@@ -34,14 +34,12 @@ jobs:
       - name: Build project
         run: pnpm run build
 
-      - name: Package build files
-        run: zip -r build-${{ github.ref_name }}.zip dist/
+      - name: Package plugin
+        run: zip -r "offline-notify.zip" dist/
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            build-${{ github.ref_name }}.zip
-            dist/**
+          files: offline-notify.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
