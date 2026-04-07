@@ -34,7 +34,7 @@ jobs:
 
       # 5. 打包构建产物（zip 方便下载）
       - name: Package build files
-        run: zip -r defult.zip dist/
+        run: zip -r napcat-plugin-offline-notification.zip dist/
 
       # 6. 自动上传到 GitHub Release
       - name
