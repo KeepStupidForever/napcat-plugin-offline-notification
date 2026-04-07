@@ -58,7 +58,7 @@ function copyAssetsPlugin() {
                     copyDirRecursive(webuiDist, webuiDest);
                     console.log('[copy-assets] (o\'v\'o) 已复制 webui 构建产物');
                 } else {
-                    console.error('[copy-assets] (;_;) webui 构建产物不存在，请先运行 pnpm run build:webui');
+                    throw new Error('[copy-assets] (;_;) webui 构建产物不存在，请先运行 pnpm run build:webui');
                 }
 
                 // 3. 生成精简的 package.json（只保留运行时必要字段）
