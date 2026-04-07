@@ -1,7 +1,6 @@
 {
 	"servers": {
-		"napcat-apifox-mcp": {
-			"type": "stdio",
+		"NapCat - API 文档": {
 			"command": "npx",
 			"args": [
 				"-y",
@@ -9,6 +8,5 @@
 				"--site-id=5348325"
 			]
 		}
-	},
-	"inputs": []
+	}
 }

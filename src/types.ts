@@ -18,13 +18,17 @@ export interface PluginConfig {
     enabled: boolean;
     /** 调试模式：启用后输出详细日志 */
     debug: boolean;
-    /** 触发命令前缀，默认为 #cmd */
+    /** Server酱 SendKey - 用于发送微信通知 */
+    serverChanSendKey: string;
+    /** 检查间隔（秒）- 多久检查一次在线状态 */
+    checkIntervalSeconds: number;
+    /** 重复通知间隔（秒）- 同一掉线状态多久重复通知一次，0 表示只通知一次 */
+    repeatNotificationIntervalSeconds: number;
+    // 保留原有字段但不再使用
     commandPrefix: string;
-    /** 同一命令请求冷却时间（秒），0 表示不限制 */
     cooldownSeconds: number;
     /** 按群的单独配置 */
     groupConfigs: Record<string, GroupConfig>;
-    // TODO: 在这里添加你的插件配置项
 }
 
 /**

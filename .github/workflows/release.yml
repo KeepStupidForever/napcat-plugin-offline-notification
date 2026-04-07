@@ -64,23 +64,23 @@ jobs:
 
       - name: Prepare release package
         env:
-          PLUGIN_NAME: napcat-plugin-template
+          PLUGIN_NAME: 掉线通知插件
         run: |
           # 创建临时目录用于组织文件
-          mkdir -p release
+          mkdir -p release/${PLUGIN_NAME}
 
           # 复制需要的文件到临时目录
-          cp dist/index.mjs release/
-          cp dist/package.json release/
-          cp -r dist/webui release/
+          cp dist/index.mjs release/${PLUGIN_NAME}/
+          cp dist/package.json release/${PLUGIN_NAME}/
+          cp -r dist/webui release/${PLUGIN_NAME}/
 
           # 进入临时目录并压缩
           cd release
-          zip -r ../${PLUGIN_NAME}.zip index.mjs package.json webui
+          zip -r ../${PLUGIN_NAME}.zip ${PLUGIN_NAME}/
 
       - name: Verify zip contents
         run: |
-          PLUGIN_NAME="napcat-plugin-template"
+          PLUGIN_NAME="掉线通知插件"
           unzip -l ${PLUGIN_NAME}.zip
 
       - name: Collect git log
@@ -242,7 +242,7 @@ jobs:
           body_path: CHANGELOG.md
           draft: false
           files: |
-            napcat-plugin-template.zip
+            掉线通知插件.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

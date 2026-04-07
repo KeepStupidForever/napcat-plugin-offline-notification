@@ -55,17 +55,17 @@ function copyAssetsPlugin() {
                     // 先确保 webui 子项目的依赖已安装
                     if (!fs.existsSync(resolve(webuiRoot, 'node_modules'))) {
                         console.log('[copy-assets] (o\'v\'o) 正在安装 WebUI 依赖...');
-                        execSync('pnpm install', {
-                            cwd: webuiRoot,
-                            stdio: 'pipe',
-                        });
+                    execSync('npm install', {
+                        cwd: webuiRoot,
+                        stdio: 'pipe',
+                    });
                         console.log('[copy-assets] (o\'v\'o) WebUI 依赖安装完成');
                     }
 
                     console.log('[copy-assets] (o\'v\'o) 正在构建 WebUI...');
                     const webuiEnv = { ...process.env };
                     delete webuiEnv.NODE_ENV;
-                    execSync('pnpm run build', {
+                    execSync('npm run build', {
                         cwd: webuiRoot,
                         stdio: 'pipe',
                         env: webuiEnv,
@@ -150,5 +150,6 @@ export default defineConfig({
             distDir: './src/webui/dist',
             targetDir: 'webui',
         },
+        wsUrl: 'ws://192.168.31.85:3001',
     })],
 });

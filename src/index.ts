@@ -25,12 +25,11 @@ import type {
     PluginConfigUIController,
     NapCatPluginContext,
 } from 'napcat-types/napcat-onebot/network/plugin/types';
-import { EventType } from 'napcat-types/napcat-onebot/event/index';
 
 import { buildConfigSchema } from './config';
 import { pluginState } from './core/state';
-import { handleMessage } from './handlers/message-handler';
 import { registerApiRoutes } from './services/api-service';
+import { offlineDetectionService } from './services/notification-service';
 import type { PluginConfig } from './types';
 
 // ==================== 配置 UI Schema ====================
@@ -49,7 +48,7 @@ export const plugin_init: PluginModule['plugin_init'] = async (ctx) => {
         // 1. 初始化全局状态（加载配置）
         pluginState.init(ctx);
 
-        ctx.logger.info('插件初始化中...');
+        ctx.logger.info('掉线通知插件初始化中...');
 
         // 2. 生成配置 Schema（用于 NapCat WebUI 配置面板）
         plugin_config_ui = buildConfigSchema(ctx);
@@ -60,7 +59,15 @@ export const plugin_init: PluginModule['plugin_init'] = async (ctx) => {
         // 4. 注册 API 路由
         registerApiRoutes(ctx);
 
-        ctx.logger.info('插件初始化完成');
+        // 5. 启动掉线检测
+        if (pluginState.config.enabled) {
+            ctx.logger.info('46234523452436');
+            offlineDetectionService.start();
+        } else {
+            ctx.logger.info('插件已禁用，未启动掉线检测');
+        }
+
+        ctx.logger.info('掉线通知插件初始化完成');
     } catch (error) {
         ctx.logger.error('插件初始化失败:', error);
     }
@@ -71,12 +78,7 @@ export const plugin_init: PluginModule['plugin_init'] = async (ctx) => {
  * 收到事件时调用，需通过 post_type 判断是否为消息事件
  */
 export const plugin_onmessage: PluginModule['plugin_onmessage'] = async (ctx, event) => {
-    // 仅处理消息事件
-    if (event.post_type !== EventType.MESSAGE) return;
-    // 检查插件是否启用
-    if (!pluginState.config.enabled) return;
-    // 委托给消息处理器
-    await handleMessage(ctx, event);
+    // 此插件不需要处理消息
 };
 
 /**
@@ -95,13 +97,11 @@ export const plugin_onevent: PluginModule['plugin_onevent'] = async (ctx, event)
  * 必须清理定时器、关闭连接等资源
  */
 export const plugin_cleanup: PluginModule['plugin_cleanup'] = async (ctx) => {
-    try {
-        // TODO: 在这里清理你的资源（定时器、WebSocket 连接等）
-        pluginState.cleanup();
-        ctx.logger.info('插件已卸载');
-    } catch (e) {
-        ctx.logger.warn('插件卸载时出错:', e);
-    }
+    // 停止掉线检测
+    offlineDetectionService.stop();
+    // 清理全局状态
+    pluginState.cleanup();
+    ctx.logger.info('插件已卸载');
 };
 
 // ==================== 配置管理钩子 ====================
@@ -127,6 +127,15 @@ export const plugin_on_config_change: PluginModule['plugin_on_config_change'] = 
     try {
         pluginState.updateConfig({ [key]: value });
         ctx.logger.debug(`配置项 ${key} 已更新`);
+
+        // 如果是启用/禁用或检查间隔变更，重启检测服务
+        if (key === 'enabled' || key === 'checkIntervalSeconds') {
+            offlineDetectionService.stop();
+            if (pluginState.config.enabled) {
+                offlineDetectionService.start();
+            }
+            ctx.logger.debug(`掉线检测服务已重启`);
+        }
     } catch (err) {
         ctx.logger.error(`更新配置项 ${key} 失败:`, err);
     }

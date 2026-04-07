@@ -33,6 +33,12 @@ function sanitizeConfig(raw: unknown): PluginConfig {
 
     if (typeof raw.enabled === 'boolean') out.enabled = raw.enabled;
     if (typeof raw.debug === 'boolean') out.debug = raw.debug;
+    if (typeof raw.serverChanSendKey === 'string') out.serverChanSendKey = raw.serverChanSendKey;
+    if (typeof raw.checkIntervalSeconds === 'number') out.checkIntervalSeconds = raw.checkIntervalSeconds;
+    if (typeof raw.repeatNotificationIntervalSeconds === 'number') {
+        out.repeatNotificationIntervalSeconds = raw.repeatNotificationIntervalSeconds;
+    }
+    // 兼容原有字段
     if (typeof raw.commandPrefix === 'string') out.commandPrefix = raw.commandPrefix;
     if (typeof raw.cooldownSeconds === 'number') out.cooldownSeconds = raw.cooldownSeconds;
 
@@ -42,13 +48,10 @@ function sanitizeConfig(raw: unknown): PluginConfig {
             if (isObject(groupConfig)) {
                 const cfg: GroupConfig = {};
                 if (typeof groupConfig.enabled === 'boolean') cfg.enabled = groupConfig.enabled;
-                // TODO: 在这里添加你的群配置项清洗
                 out.groupConfigs[groupId] = cfg;
             }
         }
     }
-
-    // TODO: 在这里添加你的配置项清洗逻辑
 
     return out;
 }
@@ -99,7 +102,11 @@ class PluginState {
         this.startTime = Date.now();
         this.loadConfig();
         this.ensureDataDir();
-        this.fetchSelfId();
+        // 这里 fetchSelfId 是异步，但是没人 await，会导致在 start() 之后才完成
+        // 不过不影响定时检测，先继续，获取不到selfId也不影响通知功能
+        this.fetchSelfId().catch(err => {
+            this.logger.warn('获取机器人QQ号失败:', err);
+        });
     }
 
     /**

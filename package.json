@@ -1,24 +1,30 @@
 {
-  "name": "napcat-plugin-template",
-  "plugin": "插件模板",
+  "name": "掉线通知插件",
+  "plugin": "掉线通知插件",
   "version": "1.0.0",
   "type": "module",
   "main": "index.mjs",
-  "description": "NapCat 插件开发模板 - 快速开始你的插件开发",
-  "author": "Your Name",
+  "description": "NapCatQQ 掉线通知插件，当机器人掉线时自动通过 Server 酱发送微信通知",
+  "author": "Forever灬笨",
   "license": "MIT",
   "keywords": [
     "napcat",
     "plugin",
-    "qq",
-    "template"
+    "notification",
+    "offline",
+    "wechat"
   ],
   "napcat": {
     "tags": [
-      "工具"
+      "工具",
+      "通知"
     ],
     "minVersion": "4.14.0",
-    "homepage": ""
+    "homepage": "https://github.com/KeepStupidForever/napcat-plugin-offline-notification"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KeepStupidForever/napcat-plugin-offline-notification.git"
   },
   "dependencies": {
     "napcat-types": "0.0.16"
