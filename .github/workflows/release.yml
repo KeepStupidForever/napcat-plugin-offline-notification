@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
+      - name: Build webui
+        run: pnpm run build:webui
+
       - name: Build project
         run: pnpm run build
 
