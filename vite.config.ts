@@ -49,33 +49,9 @@ function copyAssetsPlugin() {
             try {
                 const distDir = resolve(__dirname, 'dist');
 
-                // 1. 构建 WebUI 前端
-                const webuiRoot = resolve(__dirname, 'src/webui');
-                try {
-                    // 先确保 webui 子项目的依赖已安装
-                    if (!fs.existsSync(resolve(webuiRoot, 'node_modules'))) {
-                        console.log('[copy-assets] (o\'v\'o) 正在安装 WebUI 依赖...');
-                    execSync('pnpm install', {
-                        cwd: webuiRoot,
-                        stdio: 'pipe',
-                    });
-                        console.log('[copy-assets] (o\'v\'o) WebUI 依赖安装完成');
-                    }
-
-                    console.log('[copy-assets] (o\'v\'o) 正在构建 WebUI...');
-                    const webuiEnv = { ...process.env };
-                    delete webuiEnv.NODE_ENV;
-                    execSync('pnpm run build', {
-                        cwd: webuiRoot,
-                        stdio: 'pipe',
-                        env: webuiEnv,
-                    });
-                    console.log('[copy-assets] (o\'v\'o) WebUI 构建完成');
-                } catch (e: any) {
-                    console.error('[copy-assets] (;_;) WebUI 构建失败:', e.stdout?.toString().slice(-300) || e.message);
-                }
-
-                // 2. 复制 webui 构建产物
+                // 1. 复制已构建的 WebUI 产物
+                // note: CI/build 流程会预先构建 webui (release.yml 中)
+                // 这里只需要复制产物即可
                 const webuiDist = resolve(__dirname, 'src/webui/dist');
                 const webuiDest = resolve(distDir, 'webui');
                 if (fs.existsSync(webuiDist)) {
