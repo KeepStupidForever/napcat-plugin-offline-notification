@@ -55,7 +55,7 @@ function copyAssetsPlugin() {
                     // 先确保 webui 子项目的依赖已安装
                     if (!fs.existsSync(resolve(webuiRoot, 'node_modules'))) {
                         console.log('[copy-assets] (o\'v\'o) 正在安装 WebUI 依赖...');
-                    execSync('npm install', {
+                    execSync('pnpm install', {
                         cwd: webuiRoot,
                         stdio: 'pipe',
                     });
@@ -65,7 +65,7 @@ function copyAssetsPlugin() {
                     console.log('[copy-assets] (o\'v\'o) 正在构建 WebUI...');
                     const webuiEnv = { ...process.env };
                     delete webuiEnv.NODE_ENV;
-                    execSync('npm run build', {
+                    execSync('pnpm run build', {
                         cwd: webuiRoot,
                         stdio: 'pipe',
                         env: webuiEnv,
