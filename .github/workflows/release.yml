@@ -30,13 +30,14 @@ jobs:
       - name: Build project
         run: pnpm run build
 
-      # 🔥 关键：改成纯英文文件名，避免变成 default.zip
-      - name: Package plugin
-        run: zip -r "offline-notify.zip" dist/
+      # 🔥 打包成你要的名字
+      - name: Package
+        run: zip -r napcat-plugin-offline-notification.zip dist/
 
+      # 🔥 上传
       - name: Upload to Release
         uses: softprops/action-gh-release@v2
         with:
-          files: offline-notify.zip
+          files: napcat-plugin-offline-notification.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
