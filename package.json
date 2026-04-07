@@ -1,5 +1,5 @@
 {
-  "name": "掉线通知插件",
+  "name": "napcat-plugin-offline-notification",
   "plugin": "掉线通知插件",
   "version": "1.0.0",
   "type": "module",
