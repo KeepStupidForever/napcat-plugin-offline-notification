@@ -57,7 +57,7 @@ jobs:
           npm version ${{ steps.version.outputs.clean_version }} --no-git-tag-version --allow-same-version
 
       - name: Install WebUI dependencies
-        run: cd src/webui && pnpm install
+        run: pnpm run build:webui
 
       - name: Build project
         run: pnpm run build
